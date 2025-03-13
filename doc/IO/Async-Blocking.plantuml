@@ -1,0 +1,26 @@
+
+@startuml
+title Async-Blocking
+
+' Sync          : 순차 작업 O (Start -> A -> B -> End)
+' Async         : 순차 작업 X (Start -> A, B -> End)
+
+' Blocking      : 작업 완료까지 대기 O (제어권을 넘기고, 스레드 차단)
+' Non-Blocking  : 작업 완료까지 대기 X (제어권 바로 반환)
+
+participant App
+participant Kernel
+
+activate App
+App -> Kernel --++ : 호출 (with Callback)
+
+Kernel -> --++ : 작업 시작
+Kernel <- ++-- : 작업 완료
+
+note left
+    응답이 올 때까지 대기
+end note
+
+Kernel -> App --++  : Callback 호출
+
+@enduml
