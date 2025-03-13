@@ -1,0 +1,26 @@
+@startuml
+actor User
+participant "Application" as App
+participant "C Library" as CLib
+participant "Kernel" as Kernel
+database "Hardware" as HW
+
+User -> App: 호출 (fread() 또는 fwrite())
+App -> CLib: 호출 (fread() 또는 fwrite())
+
+alt fread
+    CLib -> Kernel: 시스템 호출 (read)
+    Kernel -> HW: 파일 읽기 요청
+    HW -> Kernel: 데이터 반환
+    Kernel -> CLib: 데이터 전달
+    CLib -> App: 데이터 반환
+else fwrite
+    CLib -> Kernel: 시스템 호출 (write)
+    Kernel -> HW: 파일 쓰기 요청
+    HW -> Kernel: 완료 확인
+    Kernel -> CLib: 확인 반환
+    CLib -> App: 성공 또는 실패 반환
+end
+
+User -> App: 결과 확인
+@enduml
